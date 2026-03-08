@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { feedbackRoutes } from '../modules/feedback/feedback.route';
+import { settingsRoutes } from '../modules/settings/settings.route';
 
 
 const router = Router();
@@ -8,6 +9,10 @@ const moduleRoutes = [
  {
   path:"/feedback",
   route:feedbackRoutes
+ },
+ {
+  path:"/settings",
+  route:settingsRoutes
  }
 ];
 
