@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { TTest } from './test.interface';
+import { TTest } from './.interface';
 
 
 
