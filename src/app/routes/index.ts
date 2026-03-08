@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { testRoutes } from '../modules/test.route';
+import { feedbackRoutes } from '../modules/feedback/feedback.route';
 
 
 const router = Router();
 
 const moduleRoutes = [
  {
-  path:"/test",
-  route:testRoutes
+  path:"/feedback",
+  route:feedbackRoutes
  }
 ];
 
