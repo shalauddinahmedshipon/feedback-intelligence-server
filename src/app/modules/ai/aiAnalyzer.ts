@@ -50,8 +50,6 @@ const classificationSchema = z.object({
 const parser = StructuredOutputParser.fromZodSchema(classificationSchema);
 
 export const analyzeFeedback = async (text: string) => {
-  console.log("[Gemini] Model used:", llm.model);           // ← add this
-  console.log("[Gemini] API Key length:", config.gemini_api_key?.length || "MISSING");
   if (!config.gemini_api_key) {
     throw new Error("GEMINI_API_KEY is not set in environment variables");
   }
