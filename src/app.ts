@@ -4,9 +4,9 @@ import router from './app/routes';
 import cookieParser from 'cookie-parser';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
-import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import swaggerOptions from './app/config/swagger';
+import swaggerDocument from './app/config/swagger';   
+
 
 const app: Application = express();
 
@@ -18,16 +18,16 @@ app.use('/api', router);
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
-// ─── Swagger Setup ────────────────────────────────────────────────────────
-const specs = swaggerJsdoc(swaggerOptions);
 
+
+// ─── Swagger Setup ────────────────────────────────────────────────────────
 app.use(
   '/api-docs',
   swaggerUi.serve,
-  swaggerUi.setup(specs, {
-    explorer: true,               // enables search bar
-    customCss: '.swagger-ui .topbar { display: none }', // optional hide top bar
-    customSiteTitle: 'Feedback API Docs',
+  swaggerUi.setup(swaggerDocument, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Feedback Intelligence API Docs',
   })
 );
 
