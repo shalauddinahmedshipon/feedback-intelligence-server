@@ -1,6 +1,6 @@
 import { FeedbackTeam } from "../feedback/feedback.interface";
 
 export interface ITeamEmailSettings {
-  teamEmails: Record<FeedbackTeam, string>;
+  teamEmails: Map<FeedbackTeam, string>;
   updatedAt?: Date;
 }

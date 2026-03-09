@@ -1,49 +1,17 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { z } from "zod";
 import { StructuredOutputParser } from "@langchain/core/output_parsers";
 import { FeedbackCategory,FeedbackTeam,FeedbackSentiment,FeedbackPriority } from "../feedback/feedback.interface";
 import config from "../../config";
+import { classificationSchema } from "./structuredOutput.validation";
+import { prompt } from "./prompt.template";
 
 const llm = new ChatGoogleGenerativeAI({
   model: "gemini-2.5-flash", 
   apiKey: config.gemini_api_key,
-  temperature: 0.2,           
-  maxOutputTokens: 300,
+  temperature: 0,           
+  maxOutputTokens: 1024,
 });
 
-const classificationSchema = z.object({
-  category: z.enum([
-    "bug",
-    "feature",
-    "billing",
-    "ux",
-    "security",
-    "performance",
-    "other",
-  ] as const),
-
-  priority: z.enum([
-    "low",
-    "medium",
-    "high",
-    "urgent",
-  ] as const),
-
-  sentiment: z.enum([
-    "positive",
-    "neutral",
-    "negative",
-  ] as const),
-
-  team: z.enum([
-    "engineering",
-    "product",
-    "support",
-    "billing",
-    "security",
-    "design",
-  ] as const),
-});
 
 
 // @ts-expect-error Type instantiation is excessively deep and possibly infinite (LangChain + Zod known issue)
@@ -54,35 +22,29 @@ export const analyzeFeedback = async (text: string) => {
     throw new Error("GEMINI_API_KEY is not set in environment variables");
   }
 
-  const prompt = `
-You are an expert support ticket classifier for a software product company.
-
-Analyze the following user feedback and classify it into exactly these fields:
-
-${parser.getFormatInstructions()}
-
-Rules:
-- Be objective and precise.
-- Use ONLY the allowed enum values.
-- Respond **ONLY** with valid JSON — no explanations, no markdown, no extra text.
-
-User feedback:
-"""
-${text}
-"""
-  `;
 
   try {
-    const response = await llm.invoke(prompt);
-
-    // response.content is usually a string with JSON
-    const rawOutput = typeof response.content === "string"
-      ? response.content
+  const response = await llm.invoke(prompt(text));
+    
+    let rawOutput = typeof response.content === "string" 
+      ? response.content 
       : JSON.stringify(response.content);
 
-    const parsed = await parser.parse(rawOutput);
+    // 1. Remove Markdown code blocks if they exist
+    rawOutput = rawOutput.replace(/```json|```/g, "").trim();
 
-    return parsed; 
+    // 2. Extract only the portion between the first { and the last }
+    const firstBracket = rawOutput.indexOf('{');
+    const lastBracket = rawOutput.lastIndexOf('}');
+    
+    if (firstBracket === -1 || lastBracket === -1) {
+      throw new Error("No JSON object found in response");
+    }
+    
+    const cleanJson = rawOutput.substring(firstBracket, lastBracket + 1);
+
+    // 3. Parse using the StructuredOutputParser
+    return await parser.parse(cleanJson);
   } catch (err) {
     console.error("LLM classification failed:", err);
 
