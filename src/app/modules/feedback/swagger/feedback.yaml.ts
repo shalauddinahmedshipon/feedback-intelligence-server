@@ -1,3 +1,6 @@
+import yaml from 'yaml';
+
+const raw=`
 openapi: 3.0.3
 
 tags:
@@ -221,3 +224,7 @@ components:
         createdAt:
           type: string
           format: date-time
+
+`
+
+export default yaml.parse(raw);

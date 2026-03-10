@@ -1,3 +1,5 @@
+import yaml from 'yaml';
+const raw=`
 openapi: 3.0.3
 
 tags:
@@ -96,3 +98,5 @@ paths:
           description: Validation error (invalid email format, etc.)
         '500':
           description: Server error
+`
+export default yaml.parse(raw);
