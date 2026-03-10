@@ -1,13 +1,19 @@
-import AppError from "../../error/AppError";
-import { sendEmail } from "../../utils/sendEmail";
-import { analyzeFeedback } from "../ai/aiAnalyzer";
-import { Settings } from "../settings/settings.model";
-import { IFeedback } from "./feedback.interface";
-import { Feedback } from "./feedback.model";
-import { emailContent } from "./utils/email.template";
+import AppError from '../../error/AppError';
+import { sendEmail } from '../../utils/sendEmail';
+import { analyzeFeedback } from '../ai/aiAnalyzer';
+import { Settings } from '../settings/settings.model';
+import {
+  allCategories,
+  allTeams,
+  allSentiments,
+  allPriorities,
+} from './feedback.constant';
+import { IFeedback } from './feedback.interface';
+import { Feedback } from './feedback.model';
+import { emailContent } from './utils/email.template';
 import { StatusCodes } from 'http-status-codes';
 
-const createFeedbackInDB = async (payload:IFeedback) => {
+const createFeedbackInDB = async (payload: IFeedback) => {
   const { message, userName } = payload;
 
   // 1. Analyze feedback with AI (Gemini)
@@ -16,7 +22,7 @@ const createFeedbackInDB = async (payload:IFeedback) => {
   // 2. Prepare document
   const feedbackData = {
     message,
-    userName,
+    userName: userName ? `${userName}` : 'Anonymous',
     ...aiResult,
   };
 
@@ -25,25 +31,22 @@ const createFeedbackInDB = async (payload:IFeedback) => {
 
   // 4. Trigger Email Notification (Asynchronous)
   try {
-const settings = await Settings.findOne();
-const teamEmails = settings?.teamEmails;
+    const settings = await Settings.findOne();
+    const teamEmails = settings?.teamEmails;
 
-const targetEmail = teamEmails ? teamEmails.get(newFeedback.team) : null;
+    const targetEmail = teamEmails ? teamEmails.get(newFeedback.team) : null;
 
-console.log("AI team:", newFeedback.team);
-console.log("Target email:", targetEmail);
+    if (targetEmail) {
+      const content = emailContent(newFeedback);
 
-if (targetEmail) {
-  const content = emailContent(newFeedback);
-
-  await sendEmail(
-    targetEmail,
-    `[${newFeedback.priority.toUpperCase()}] New Feedback Assigned to ${newFeedback.team}`,
-    content
-  );
-}
+      await sendEmail(
+        targetEmail,
+        `[${newFeedback.priority.toUpperCase()}] New Feedback Assigned to ${newFeedback.team}`,
+        content,
+      );
+    }
   } catch (emailError) {
-    console.error("Failed to send team email:", emailError);
+    console.error('Failed to send team email:', emailError);
   }
 
   // 5. Return the saved document
@@ -57,27 +60,22 @@ const getAllFeedbacksFromDB = async (query: Record<string, any>) => {
 
   const filter: any = {};
 
-  // 1. Strict Filtering (Exact matches from dropdowns)
-  if (query.category) {
-    filter.category = query.category;
-  }
+  if (query.category) filter.category = query.category;
+  if (query.priority) filter.priority = query.priority;
+  if (query.sentiment) filter.sentiment = query.sentiment;
+  if (query.team) filter.team = query.team;
 
-  if (query.priority) {
-    filter.priority = query.priority;
-  }
-
-  // 2. Search Logic (Partial matches from a search bar)
   if (query.search) {
-    const searchRegex = { $regex: query.search, $options: "i" };
-    
+    const searchRegex = { $regex: query.search, $options: 'i' };
     filter.$or = [
       { message: searchRegex },
       { userName: searchRegex },
       { category: searchRegex },
-      { priority: searchRegex }
+      { priority: searchRegex },
+      { sentiment: searchRegex },
+      { team: searchRegex },
     ];
   }
-
 
   const feedbacks = await Feedback.find(filter)
     .sort({ createdAt: -1 })
@@ -98,33 +96,38 @@ const getAllFeedbacksFromDB = async (query: Record<string, any>) => {
   };
 };
 
-
 const getFeedbackStatsFromDB = async () => {
-
-  const byCategory = await Feedback.aggregate([
-    {
-      $group: {
-        _id: "$category",
-        count: { $sum: 1 },
-      },
-    },
+  const rawByCategory = await Feedback.aggregate([
+    { $group: { _id: '$category', count: { $sum: 1 } } },
   ]);
 
-  const byPriority = await Feedback.aggregate([
-    {
-      $group: {
-        _id: "$priority",
-        count: { $sum: 1 },
-      },
-    },
+  const rawByPriority = await Feedback.aggregate([
+    { $group: { _id: '$priority', count: { $sum: 1 } } },
   ]);
 
-  return {
-    byCategory,
-    byPriority,
-  };
+  const rawBySentiment = await Feedback.aggregate([
+    { $group: { _id: '$sentiment', count: { $sum: 1 } } },
+  ]);
+
+  const rawByTeam = await Feedback.aggregate([
+    { $group: { _id: '$team', count: { $sum: 1 } } },
+  ]);
+
+  const byCategory = allCategories.map(
+    (c) => rawByCategory.find((r) => r._id === c) || { _id: c, count: 0 },
+  );
+  const byPriority = allPriorities.map(
+    (p) => rawByPriority.find((r) => r._id === p) || { _id: p, count: 0 },
+  );
+  const bySentiment = allSentiments.map(
+    (s) => rawBySentiment.find((r) => r._id === s) || { _id: s, count: 0 },
+  );
+  const byTeam = allTeams.map(
+    (t) => rawByTeam.find((r) => r._id === t) || { _id: t, count: 0 },
+  );
+
+  return { byCategory, byPriority, bySentiment, byTeam };
 };
-
 
 const getFeedbackByIdFromDB = async (id: string) => {
   const feedback = await Feedback.findById(id).lean();
@@ -135,8 +138,6 @@ const getFeedbackByIdFromDB = async (id: string) => {
 
   return feedback;
 };
-
-
 
 const deleteFeedbackFromDB = async (id: string) => {
   const result = await Feedback.deleteOne({ _id: id });
@@ -153,5 +154,5 @@ export const feedbackService = {
   getAllFeedbacksFromDB,
   getFeedbackStatsFromDB,
   getFeedbackByIdFromDB,
-  deleteFeedbackFromDB 
+  deleteFeedbackFromDB,
 };

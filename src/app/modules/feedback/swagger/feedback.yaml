@@ -22,10 +22,10 @@ paths:
                 message:
                   type: string
                   minLength: 10
-                  example: "The payment page crashes when I try to checkout"
+                  example: 'The payment page crashes when I try to checkout'
                 userName:
                   type: string
-                  example: "John Doe"
+                  example: 'John Doe'
       responses:
         '201':
           description: Feedback created successfully

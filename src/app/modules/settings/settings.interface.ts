@@ -1,4 +1,4 @@
-import { FeedbackTeam } from "../feedback/feedback.interface";
+import { FeedbackTeam } from '../feedback/feedback.interface';
 
 export interface ITeamEmailSettings {
   teamEmails: Map<FeedbackTeam, string>;

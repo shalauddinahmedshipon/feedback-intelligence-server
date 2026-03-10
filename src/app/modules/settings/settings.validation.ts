@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const updateSettingsValidationSchema = z.object({
   body: z.object({
-    teamEmails: z.record(z.string().email("Invalid email format")),
+    teamEmails: z.record(z.string().email('Invalid email format')),
   }),
 });
 

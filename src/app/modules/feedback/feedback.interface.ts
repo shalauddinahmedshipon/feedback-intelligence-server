@@ -4,7 +4,7 @@ export enum FeedbackCategory {
   Billing = 'billing',
   UX = 'ux',
   Performance = 'performance',
-  Security='security',
+  Security = 'security',
   Other = 'other',
 }
 
@@ -26,7 +26,7 @@ export enum FeedbackTeam {
   Product = 'product',
   Support = 'support',
   Billing = 'billing',
-  Security='security',
+  Security = 'security',
   Design = 'design',
 }
 

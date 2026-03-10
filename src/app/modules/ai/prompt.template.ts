@@ -1,5 +1,5 @@
-export const prompt =(text:string)=>{
-    return `
+export const prompt = (text: string) => {
+  return `
     You are an expert support ticket classifier. 
     Classify this feedback: "${text}"
 
@@ -11,4 +11,4 @@ export const prompt =(text:string)=>{
 
     Format your response as valid JSON.
   `;
-} 
+};

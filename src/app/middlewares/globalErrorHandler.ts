@@ -9,7 +9,6 @@ import handleCastError from '../error/handleCastError';
 import handleDuplicateError from '../error/handleDuplicateError';
 import AppError from '../error/AppError';
 
-
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let statusCode = 500;
   let message = err?.message || 'something went wrong!';

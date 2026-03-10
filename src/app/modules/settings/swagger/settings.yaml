@@ -33,12 +33,12 @@ paths:
                           type: string
                           format: email
                         example:
-                          engineering: "eng@company.com"
-                          product: "product@company.com"
-                          support: "support@company.com"
-                          billing: "billing@company.com"
-                          design: "design@company.com"
-                          security: "security@company.com"
+                          engineering: 'eng@company.com'
+                          product: 'product@company.com'
+                          support: 'support@company.com'
+                          billing: 'billing@company.com'
+                          design: 'design@company.com'
+                          security: 'security@company.com'
         '500':
           description: Server error
 
@@ -60,16 +60,16 @@ paths:
                     type: string
                     format: email
                   example:
-                    engineering: "eng@company.com"
-                    product: "product@company.com"
-                    support: "support@company.com"
-                    billing: "billing@company.com"
-                    design: "design@company.com"
-                    security: "security@company.com"
+                    engineering: 'eng@company.com'
+                    product: 'product@company.com'
+                    support: 'support@company.com'
+                    billing: 'billing@company.com'
+                    design: 'design@company.com'
+                    security: 'security@company.com'
               example:
                 teamEmails:
-                  engineering: "new-eng@company.com"
-                  support: "help@company.com"
+                  engineering: 'new-eng@company.com'
+                  support: 'help@company.com'
       responses:
         '200':
           description: Settings updated successfully

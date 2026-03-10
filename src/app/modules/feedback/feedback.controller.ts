@@ -4,42 +4,35 @@ import { feedbackService } from './feedback.service';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 
-const createFeedback = catchAsync(
-  async (req: Request, res: Response) => {
-    const result = await feedbackService.createFeedbackInDB(req.body);
+const createFeedback = catchAsync(async (req: Request, res: Response) => {
+  const result = await feedbackService.createFeedbackInDB(req.body);
 
-    sendResponse(res, {
-      statusCode: StatusCodes.CREATED,
-      message: 'Feedback created successfully',
-      data: result,
-    });
-  }
-);
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    message: 'Feedback created successfully',
+    data: result,
+  });
+});
 
-const getAllFeedbacks = catchAsync(
-  async (req: Request, res: Response) => {
-    const result = await feedbackService.getAllFeedbacksFromDB(req.query);
+const getAllFeedbacks = catchAsync(async (req: Request, res: Response) => {
+  const result = await feedbackService.getAllFeedbacksFromDB(req.query);
 
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      message: 'Feedbacks retrieved successfully',
-      data: result,
-    });
-  }
-);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    message: 'Feedbacks retrieved successfully',
+    data: result,
+  });
+});
 
-const getFeedbackStats = catchAsync(
-  async (req: Request, res: Response) => {
-   const result = await feedbackService.getFeedbackStatsFromDB();
+const getFeedbackStats = catchAsync(async (req: Request, res: Response) => {
+  const result = await feedbackService.getFeedbackStatsFromDB();
 
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      message: 'Feedbacks retrieved successfully',
-      data: result,
-    });
-  }
-);
-
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    message: 'Feedbacks retrieved successfully',
+    data: result,
+  });
+});
 
 const getFeedbackById = catchAsync(async (req: Request, res: Response) => {
   const result = await feedbackService.getFeedbackByIdFromDB(req.params.id);
@@ -66,5 +59,5 @@ export const feedbackController = {
   getAllFeedbacks,
   getFeedbackStats,
   deleteFeedback,
-  getFeedbackById
+  getFeedbackById,
 };

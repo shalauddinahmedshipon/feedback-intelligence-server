@@ -1,14 +1,14 @@
-import { IFeedback } from "../feedback.interface";
+import { IFeedback } from '../feedback.interface';
 
 export const emailContent = (newFeedback: IFeedback) => {
   const priorityColor =
-    newFeedback.priority === "urgent"
-      ? "#dc2626"
-      : newFeedback.priority === "high"
-      ? "#ea580c"
-      : newFeedback.priority === "medium"
-      ? "#f59e0b"
-      : "#16a34a";
+    newFeedback.priority === 'urgent'
+      ? '#dc2626'
+      : newFeedback.priority === 'high'
+        ? '#ea580c'
+        : newFeedback.priority === 'medium'
+          ? '#f59e0b'
+          : '#16a34a';
   return `
   <!DOCTYPE html>
   <html>
@@ -62,7 +62,7 @@ export const emailContent = (newFeedback: IFeedback) => {
 
                   <tr>
                     <td style="border-bottom:1px solid #eee;font-weight:bold;">Submitted By</td>
-                    <td style="border-bottom:1px solid #eee;">${newFeedback.userName || "Anonymous"}</td>
+                    <td style="border-bottom:1px solid #eee;">${newFeedback.userName || 'Anonymous'}</td>
                   </tr>
 
                 </table>

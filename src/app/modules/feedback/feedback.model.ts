@@ -1,5 +1,11 @@
-import { model, Schema } from "mongoose";
-import { FeedbackCategory, FeedbackPriority, FeedbackSentiment, FeedbackTeam, IFeedback } from "./feedback.interface";
+import { model, Schema } from 'mongoose';
+import {
+  FeedbackCategory,
+  FeedbackPriority,
+  FeedbackSentiment,
+  FeedbackTeam,
+  IFeedback,
+} from './feedback.interface';
 
 const feedbackSchema = new Schema<IFeedback>({
   message: { type: String, required: true },
@@ -45,4 +51,4 @@ const feedbackSchema = new Schema<IFeedback>({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const Feedback= model<IFeedback>('Feedback', feedbackSchema);
+export const Feedback = model<IFeedback>('Feedback', feedbackSchema);

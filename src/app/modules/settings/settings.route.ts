@@ -1,16 +1,16 @@
-import { Router } from "express";
-import { settingsController } from "./settings.controller";
-import { settingsValidation } from "./settings.validation";
-import validationRequest from "../../middlewares/validateRequest";
+import { Router } from 'express';
+import { settingsController } from './settings.controller';
+import { settingsValidation } from './settings.validation';
+import validationRequest from '../../middlewares/validateRequest';
 
 const router = Router();
 
-router.get("/", settingsController.getSettings);
+router.get('/', settingsController.getSettings);
 
 router.patch(
-  "/update-settings",
+  '/update-settings',
   validationRequest(settingsValidation.updateSettingsValidationSchema),
-  settingsController.updateSettings
+  settingsController.updateSettings,
 );
 
 export const settingsRoutes = router;

@@ -7,7 +7,9 @@ const createFeedbackValidationSchema = z.object({
         required_error: 'Message is required',
         invalid_type_error: 'Message must be a string',
       })
-      .min(10, { message: 'Feedback message must be at least 10 characters long' })
+      .min(10, {
+        message: 'Feedback message must be at least 10 characters long',
+      })
       .max(2000, { message: 'Feedback message cannot exceed 2000 characters' })
       .trim(),
 
