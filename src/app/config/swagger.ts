@@ -39,7 +39,8 @@ const swaggerDocument = {
 
 // Load the feedback module spec
 const feedbackSpec = yaml.load(
-  path.join(process.cwd(), 'src/app/modules/feedback/swagger/feedback.yaml'),
+  // path.join(process.cwd(), 'src/app/modules/feedback/swagger/feedback.yaml'),
+  path.join(__dirname, '../modules/feedback/swagger/feedback.yaml')
 );
 
 // Merge the feedback spec into the main document
@@ -48,8 +49,10 @@ Object.assign(swaggerDocument.components, feedbackSpec.components || {});
 
 // ── Add this block for settings ────────────────────────────────────────
 const settingsSpec = yaml.load(
-  path.join(process.cwd(), 'src/app/modules/settings/swagger/settings.yaml'),
+  // path.join(process.cwd(), 'src/app/modules/settings/swagger/settings.yaml'),
+   path.join(__dirname, '../modules/settings/swagger/settings.yaml')
 );
+
 Object.assign(swaggerDocument.paths, settingsSpec.paths || {});
 Object.assign(swaggerDocument.components, settingsSpec.components || {});
 
