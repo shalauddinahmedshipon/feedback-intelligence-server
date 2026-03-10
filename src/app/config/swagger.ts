@@ -20,10 +20,10 @@ const swaggerDocument = {
       description: 'Development server',
     },
 
-    // {
-    //   url: 'https://your-app-domain.com',
-    //   description: 'Production server',
-    // },
+    {
+      url: 'https://feedback-intelligence-server.vercel.app',
+      description: 'Production server',
+    },
   ],
   tags: [
     {
