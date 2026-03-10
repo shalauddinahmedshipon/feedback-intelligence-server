@@ -21,7 +21,7 @@
 - **Runtime**: Node.js
 - **Framework**: Express.js
 - **Database**: MongoDB (Mongoose ODM)
-- **AI Integration**: LangChain + @langchain/google-genai (Google Gemini 1.5 Flash)
+- **AI Integration**: LangChain + @langchain/google-genai (Google Gemini 2.5 Flash)
 - **Validation**: Zod
 - **Email**: Nodemailer
 - **API Docs**: swagger-jsdoc + swagger-ui-express
